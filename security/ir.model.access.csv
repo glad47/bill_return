@@ -1,4 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_account_move_bill_selector_user,access.account.move.bill.selector.user,model_account_move_bill_selector,base.group_user,1,1,1,1
 access_account_move_line_user,account.move.line,model_account_move_line,base.group_user,1,1,1,1
 access_account_move_user,account.move,model_account_move,base.group_user,1,1,1,1
+access_linked_move_line_user,access.linked.move.line.user,model_linked_move_line,base.group_user,1,1,1,1

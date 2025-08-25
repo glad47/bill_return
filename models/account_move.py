@@ -12,19 +12,63 @@ class AccountMove(models.Model):
         domain="[ ('state', '=', 'posted'), ('move_type', '=', 'in_invoice'), ('partner_id', '=', partner_id)]"
     )
 
-    linked_invoice_line_ids = fields.One2many(
-        'account.move.line',
+    linked_invoice_line_proxy_ids = fields.One2many(
+        'linked.move.line',
         'move_id',
-        string="Linked Invoice Lines",
+        string="Linked Invoice Line Proxies",
+        store=True,
+        
     )
 
 
+
+    @api.onchange('vendor_purchase_bill_ids')
+    def _onchange_vendor_purchase_bill_ids(self):
+        LinkedLine = self.env['linked.move.line']
+        for move in self:
+            # Step 1: Remove all existing linked lines for this move
+            move.linked_invoice_line_proxy_ids = [(5, 0, 0)]  # Clears one2many
+
+            proxies = []
+            for bill in move.vendor_purchase_bill_ids:
+                for line in bill.invoice_line_ids:
+                    proxies.append((0, 0, {
+                        'move_id': move.id,
+                        'source_move_id': bill.id,
+                        'source_line_id': line.id,
+                        'product_id': line.product_id.id,
+                        'name': line.name,
+                        'quantity': line.quantity,
+                        'price_unit': line.price_unit,
+                        'tax_ids': [(6, 0, line.tax_ids.ids)],
+                        'account_id': line.account_id.id,
+                        'discount': line.discount,
+                        'currency_id': line.currency_id.id,
+                        'partner_id': line.partner_id.id,
+                        'date': line.date,
+                    }))
+            move.linked_invoice_line_proxy_ids = proxies
+
+
     # @api.onchange('vendor_purchase_bill_ids')
+    # def _onchange_vendor_purchase_bill_ids(self):
+    #     for move in self:
+    #         proxies = []
+    #         for bill in move.vendor_purchase_bill_ids:
+    #             for line in bill.invoice_line_ids:
+    #                 proxies.append((0, 0, {'invoice_line_id': line.id}))
+    #         move.linked_invoice_line_proxy_ids = proxies
+
+
+
+    # @api.depends('vendor_purchase_bill_ids')
     # def _compute_linked_invoice_lines(self):
-    #     all_lines = self.env['account.move.line']
-    #     for bill in self.vendor_purchase_bill_ids:
-    #         all_lines |= bill.invoice_line_ids
-    #     self.linked_invoice_line_ids = all_lines
+    #     for move in self:
+    #         lines = self.env['account.move.line']
+    #         for bill in move.vendor_purchase_bill_ids:
+    #             lines |= bill.invoice_line_ids
+    #         move.linked_invoice_line_ids = lines
+
 
     # related_invoice_lines = fields.One2many(
     #     'account.move.line',
