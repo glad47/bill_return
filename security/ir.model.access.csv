@@ -1,7 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_store_location_admin,access.store.location.admin,model_store_location,store_product_batch.group_store_batch_admin,1,1,1,1
-access_store_batch_admin,access.store.batch.admin,model_store_batch,store_product_batch.group_store_batch_admin,1,1,1,1
-access_store_branch_admin,access.store.branch.admin,model_store_branch,store_product_batch.group_store_batch_admin,1,1,1,1
-access_store_batch_user,access.store.batch.user,model_store_batch,store_product_batch.group_store_batch_user,1,1,1,1
-access_store_location_user,access.store.location.user,model_store_location,store_product_batch.group_store_batch_user,1,0,0,0
-access_store_branch_user,access.store.branch.user,model_store_branch,store_product_batch.group_store_batch_user,1,0,0,0
+access_account_move_bill_selector_user,access.account.move.bill.selector.user,model_account_move_bill_selector,base.group_user,1,1,1,1
+access_account_move_line_user,account.move.line,model_account_move_line,base.group_user,1,1,1,1
+access_account_move_user,account.move,model_account_move,base.group_user,1,1,1,1

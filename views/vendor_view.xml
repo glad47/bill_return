@@ -1,0 +1,13 @@
+<odoo>
+    <!-- Action -->
+    <record id="action_vendor_list" model="ir.actions.act_window">
+        <field name="name">Vendors</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_vendor_list_root" name="Vendor Management" sequence="10"/>
+    <menuitem id="menu_vendor_list" name="Vendors" parent="menu_vendor_list_root" action="action_vendor_list" sequence="20"/>
+</odoo>
