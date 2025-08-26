@@ -9,216 +9,27 @@ class AccountMove(models.Model):
         'account_move_vendor_purchase_rel',  # optional: custom relation table name
         'move_id', 'bill_id',  
         string="Related Vendor Bills",
-        domain="[ ('state', '=', 'posted'), ('move_type', '=', 'in_invoice'), ('partner_id', '=', partner_id)]"
-    )
-
-    linked_invoice_line_proxy_ids = fields.One2many(
-        'linked.move.line',
-        'move_id',
-        string="Linked Invoice Line Proxies",
-        store=True,
-        
+        domain="[('state', '=', 'posted'), ('move_type', '=', 'in_invoice'), ('partner_id', '=', partner_id)]"
     )
 
 
+    product_ids = fields.Many2many(
+        'product.product',
+        string="Products in Bill",
+        compute='_compute_product_ids',
+        store=True
+    )
 
-    @api.onchange('vendor_purchase_bill_ids')
-    def _onchange_vendor_purchase_bill_ids(self):
-        LinkedLine = self.env['linked.move.line']
+    @api.depends('invoice_line_ids.product_id')
+    def _compute_product_ids(self):
         for move in self:
-            # Step 1: Remove all existing linked lines for this move
-            move.linked_invoice_line_proxy_ids = [(5, 0, 0)]  # Clears one2many
+            move.product_ids = move.invoice_line_ids.mapped('product_id')
 
-            proxies = []
-            for bill in move.vendor_purchase_bill_ids:
-                for line in bill.invoice_line_ids:
-                    proxies.append((0, 0, {
-                        'move_id': move.id,
-                        'source_move_id': bill.id,
-                        'source_line_id': line.id,
-                        'product_id': line.product_id.id,
-                        'name': line.name,
-                        'quantity': line.quantity,
-                        'price_unit': line.price_unit,
-                        'tax_ids': [(6, 0, line.tax_ids.ids)],
-                        'account_id': line.account_id.id,
-                        'discount': line.discount,
-                        'currency_id': line.currency_id.id,
-                        'partner_id': line.partner_id.id,
-                        'date': line.date,
-                    }))
-            move.linked_invoice_line_proxy_ids = proxies
-
-
-    # @api.onchange('vendor_purchase_bill_ids')
-    # def _onchange_vendor_purchase_bill_ids(self):
-    #     for move in self:
-    #         proxies = []
-    #         for bill in move.vendor_purchase_bill_ids:
-    #             for line in bill.invoice_line_ids:
-    #                 proxies.append((0, 0, {'invoice_line_id': line.id}))
-    #         move.linked_invoice_line_proxy_ids = proxies
-
-
-
-    # @api.depends('vendor_purchase_bill_ids')
-    # def _compute_linked_invoice_lines(self):
-    #     for move in self:
-    #         lines = self.env['account.move.line']
-    #         for bill in move.vendor_purchase_bill_ids:
-    #             lines |= bill.invoice_line_ids
-    #         move.linked_invoice_line_ids = lines
-
-
-    # related_invoice_lines = fields.One2many(
-    #     'account.move.line',
-    #     compute='_compute_related_invoice_lines',
-    #     string="Editable Bill Lines",
-    #     store=False
-    # )
 
 
    
-
-    # bill_line_map = fields.Json(
-    #         string="Bill to Lines Map",
-    #         compute="_compute_bill_line_map",
-    #         store=False
-    #     )
     
-
-    @api.onchange('vendor_purchase_bill_ids')
-    def _onchange_update_line_names(self):
-        for bill in self.vendor_purchase_bill_ids:
-            for line in bill.line_ids:
-                line.name = f"{bill.name}"
     
 
 
-    # @api.depends('vendor_purchase_bill_ids')
-    # def _compute_related_invoice_lines(self):
-    #     for move in self:
-    #         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-    #         print(move.read()[0])
-            # lines = self.env['account.move.line'].search([
-            #     ('move_id', 'in', move.vendor_purchase_bill_ids.ids)
-            # ])
-            # print(lines)
-            # move.related_invoice_lines = lines
-
-
-    # @api.depends('vendor_purchase_bill_ids')
-    # def _compute_bill_line_map(self):
-    #     for move in self:
-    #         mapping = {}
-    #         for bill in move.vendor_purchase_bill_ids:
-    #             mapping[bill.id] = [{
-    #                 'line_id': line.id,
-    #                 'name': line.name,
-    #                 'product': line.product_id.name,
-    #                 'quantity': line.quantity,
-    #                 'price_unit': line.price_unit,
-    #                 'account': line.account_id.name,
-    #             } for line in bill.invoice_line_ids]
-    #         move.bill_line_map = mapping
-
-    
-
-    # def _compute_partner_purchase_bill_ids(self):
-    #     for move in self:
-    #         move.vendor_purchase_bill_ids = move.partner_id.purchase_bill_ids
-                
-            
-
-
-    # vendor_id = fields.Many2one(
-    #     'res.partner',
-    #     string="Vendor",
-    #     compute='_compute_vendor_id',
-    #     store=True
-    # )
-
-    # related_vendor_bills = fields.One2many(
-    #     'account.move',
-    #     'bills_id',
-    #     string="Other Bills from Same Vendor",
-    #     compute='_compute_related_vendor_bills',
-    #     store=False
-    # )
-
-    # @api.model
-    # def _compute_vendor_id(self):
-    #     for move in self:
-    #         move.vendor_id = move.partner_id
-    
-
-
-    # def compute_related_vendor_bills(self):
-    #     print("i am outside &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-    #     for move in self:
-    #         print("i am inside &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-    #         print(move)
-    #         if move.partner_id:
-    #             bills = self.env['account.move'].search([
-    #                 ('partner_id', '=', move.partner_id.id),
-    #             ])
-    #             # print("***************************************************************")
-    #             # print(f"Total bills found: {len(bills)}")
-    #             # for bill_data in bills.read():
-    #             #     print("\n--- Bill Details ---")
-    #             #     for key, value in bill_data.items():
-    #             #         print(f"{key}: {value}")
-    #             selectors = []
-    #             for bill in bills:
-    #                 if bill.move_type == 'in_invoice':
-    #                     # selector = self.env['account.move.bill.selector'].create({
-    #                     #     'move_id': move.id,
-    #                     #     'bill_id': bill.id,
-    #                     # })
-    #                     # for line in bill.invoice_line_ids:
-    #                     #     self.env['account.move.line'].create({
-    #                     #         'move_id': move.id,  # ← This is the fix
-    #                     #         'product_id': line.product_id.id,
-    #                     #         'quantity': line.quantity,
-    #                     #         'price_unit': line.price_unit,
-    #                     #         'name': line.name,
-    #                     #         'account_id': line.account_id.id,
-    #                     #     })
-
-    #                     selectors.append(bill)
-    #             move.related_vendor_bills = [(6, 0, selectors)]
-    # @api.model
-    # def _compute_related_vendor_bills(self):
-    #     print("i am outside &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-    #     for move in self:
-    #         print("i am inside &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-    #         print(move)
-    #         if move.partner_id:
-    #             bills = self.env['account.move'].search([
-    #                 ('partner_id', '=', move.partner_id.id),
-    #             ])
-    #             print("***************************************************************")
-    #             for bill_data in bills.read():
-    #                 print("\n--- Bill Details ---")
-    #                 for key, value in bill_data.items():
-    #                     print(f"{key}: {value}")
-    #             selectors = []
-    #             for bill in bills:
-    #                 if bill.move_type == 'in_invoice':
-    #                     # selector = self.env['account.move.bill.selector'].create({
-    #                     #     'move_id': move.id,
-    #                     #     'bill_id': bill.id,
-    #                     # })
-    #                     # for line in bill.invoice_line_ids:
-    #                     #     self.env['account.move.line'].create({
-    #                     #         'move_id': move.id,  # ← This is the fix
-    #                     #         'product_id': line.product_id.id,
-    #                     #         'quantity': line.quantity,
-    #                     #         'price_unit': line.price_unit,
-    #                     #         'name': line.name,
-    #                     #         'account_id': line.account_id.id,
-    #                     #     })
-
-    #                     selectors.append(bill)
-    #                 # selectors.append(selector.id)
-    #             move.related_vendor_bills = [(6, 0, selectors)]
+   

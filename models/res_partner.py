@@ -6,21 +6,9 @@ class ResPartner(models.Model):
 
     credit_note_count = fields.Integer(string="Credit Notes", compute='_compute_credit_note_count')
 
-    purchase_bill_ids = fields.One2many(
-        'account.move',
-        'partner_id',
-        string="Purchase Bills",
-        compute='_compute_purchase_bill_ids',
-        store=False
-    )
+ 
 
-    def _compute_purchase_bill_ids(self):
-        for partner in self:
-            partner.purchase_bill_ids = self.env['account.move'].search([
-                ('partner_id', '=', partner.id),
-                # ('move_type', '=', 'in_invoice'),
-                # ('state', 'in', ['draft', 'posted'])  # Optional filter
-            ])
+    
 
     def action_vendor_credit_notes(self):
         return {
