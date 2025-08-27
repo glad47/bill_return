@@ -49,30 +49,116 @@ class AccountMove(models.Model):
                     if bill.invoice_origin:
                         po = self.env['purchase.order'].search([('name', '=', bill.invoice_origin)], limit=1)
                         if po and po.picking_ids:
-                            picking = po.picking_ids[0]  # already a record, no need to browse again
-                            original_moves = picking.move_ids.filtered(lambda m: m.state == 'done')
-                            return_picking = self.env['stock.picking'].create({
-                                'partner_id': picking.partner_id.id,
-                                'picking_type_id': picking.picking_type_id.id,
-                                'location_id': picking.location_dest_id.id,
-                                'location_dest_id': picking.location_id.id,
-                                'origin': f"Return of {picking.name}",
-                            })
+                            picking = {}
+                            for pk in po.picking_ids:
+                                if pk.origin == bill.invoice_origin:
+                                    picking = pk
+                            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+                            print(picking.read()[0])
+                            # Build product_return_moves from picking
+                            return_lines = []
+                            for move in picking.move_line_ids:
+                                print("@@@@@@@xxxxxxxxxxxxxx@@@@@@@")
+                                print(move.read()[0])
+                                # print("Move ID:", move.move_id.id)
+                                # print("Move Company:", move.move_id.company_id.name)
+                                # print("User Companies:", self.env.user.company_ids.mapped('name'))
+                                if move.product_id.type != 'product':
+                                    continue
+                                if move.product_id.id != line.product_id.id:
+                                    continue    
+                                return_lines.append((0, 0, {
+                                    'product_id': line.product_id.id,
+                                    'quantity': line.quantity,
+                                    'move_id': move.move_id.sudo().id,
+                                    'to_refund': True,
+                                }))
 
-                            self.env['stock.move'].create({
-                                'name': other_moves.name,
-                                'product_id': line.product_id.id,
-                                'product_uom_qty': line.quantity,
-                                'product_uom': line.product_id.uom_id.id,
-                                'picking_id': return_picking.id,
-                                'location_id': picking.location_dest_id.id,
-                                'location_dest_id': picking.location_id.id,
-                                'origin_returned_move_id': original_moves[0].id if original_moves else False,
-                                'state': 'draft',
+                            # Create return wizard and trigger return
+                            wizard = self.env['stock.return.picking'].with_context(active_id=picking.id).create({
+                                'picking_id': picking.id,
+                                'product_return_moves': return_lines,
+                                'company_id': picking.company_id.id,
                             })
+                            return_action = wizard.create_returns()
+                            if return_action and 'res_id' in return_action:
+                                return_picking = self.env['stock.picking'].browse(return_action['res_id'])
 
-                            return_picking.action_confirm()
-                            return_picking.action_assign()
+
+                                
+
+                                print("@#@#@#@#@#@#@#@")
+                                print(return_picking.move_line_ids)
+                                # Set quantity_done for each move line
+                                for move in return_picking.move_ids:
+                                    print("*********************************")
+                                    print(move.read()[0])
+                                    self.env['stock.move.line'].create({
+                                            'move_id': move.id,  # the move inside return_picking
+                                            'picking_id': return_picking.id,
+                                            'product_id': move.product_id.id,
+                                            'product_uom_id': move.product_uom.id,
+                                            'location_id':  move.location_id.id,       # reverse: from WH/Stock
+                                            'location_dest_id':move.location_dest_id.id,       # reverse: to Vendors
+                                            'company_id': move.company_id.id,
+                                            'qty_done': line.quantity,                                 # e.g. 50.0
+                                        })
+                                        
+
+                                print("@#@#@#@#@#@#@#@")
+                                print(return_picking.move_line_ids)
+ 
+                                        
+                                #     if move.product_id.type != 'product':
+                                #         continue
+                                #     if move.product_id.id != line.product_id.id:
+                                #         continue 
+                                #     move.qty_done = line.quantity  # or any explicit value you want to return
+                                #     move.reserved_qty = line.quantity 
+
+                                #     print("&&&&&&&&&&&&&&&&&&&&&&&")
+                                #     print(move.read()[0])
+
+                                # print("&&&&&&&&&&&&&&3333out&&&&&&&&&&&&&&&")
+                                # print(return_picking.read)    
+
+
+
+
+                                return_picking.action_confirm()
+                                return_picking.action_assign()
+                                
+
+                                # Validate the picking (final step)
+                                return_picking.button_validate()
+                                # Force validation, bypassing reservation logic
+                                # return_picking.with_context(cancel_backorder=True).button_validate()
+                                
+                            # Optional: link return picking to bill for audit
+                            # bill.return_picking_id = return_action['res_id']
+                            # original_moves = picking.move_ids.filtered(lambda m: m.state == 'done')
+                            # return_picking = self.env['stock.picking'].create({
+                            #     'partner_id': picking.partner_id.id,
+                            #     'picking_type_id': picking.picking_type_id.id,
+                            #     'location_id': picking.location_dest_id.id,
+                            #     'location_dest_id': picking.location_id.id,
+                            #     'origin': f"Return of {picking.name}",
+                            # })
+
+                            # self.env['stock.move'].create({
+                            #     'name': other_moves.name,
+                            #     'product_id': line.product_id.id,
+                            #     'product_uom_qty': line.quantity,
+                            #     'product_uom': line.product_id.uom_id.id,
+                            #     'picking_id': return_picking.id,
+                            #     'location_id': picking.location_dest_id.id,
+                            #     'location_dest_id': picking.location_id.id,
+                            #     'origin_returned_move_id': original_moves[0].id if original_moves else False,
+                            #     'state': 'draft',
+                            # })
+
+                            # return_picking.action_confirm()
+                            # return_picking.action_assign()
                         else:
                             print(f"No picking found for PO: {bill.invoice_origin}")
 
