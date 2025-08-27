@@ -41,14 +41,41 @@ class AccountMove(models.Model):
             # print(other_moves.read()[0])
             other_moves._post(soft=False)
             # Prepare new move values
+           
             for line in other_moves.line_ids:
                 for bill in line.vendor_bills:
                     print("xxxxxxxxxxxxx")
                     print(bill.invoice_origin)
                     if bill.invoice_origin:
                         po = self.env['purchase.order'].search([('name', '=', bill.invoice_origin)], limit=1)
-                        print("################")
-                        print(po.read()[0])
+                        if po and po.picking_ids:
+                            picking = po.picking_ids[0]  # already a record, no need to browse again
+                            original_moves = picking.move_ids.filtered(lambda m: m.state == 'done')
+                            return_picking = self.env['stock.picking'].create({
+                                'partner_id': picking.partner_id.id,
+                                'picking_type_id': picking.picking_type_id.id,
+                                'location_id': picking.location_dest_id.id,
+                                'location_dest_id': picking.location_id.id,
+                                'origin': f"Return of {picking.name}",
+                            })
+
+                            self.env['stock.move'].create({
+                                'name': other_moves.name,
+                                'product_id': line.product_id.id,
+                                'product_uom_qty': line.quantity,
+                                'product_uom': line.product_id.uom_id.id,
+                                'picking_id': return_picking.id,
+                                'location_id': picking.location_dest_id.id,
+                                'location_dest_id': picking.location_id.id,
+                                'origin_returned_move_id': original_moves[0].id if original_moves else False,
+                                'state': 'draft',
+                            })
+
+                            return_picking.action_confirm()
+                            return_picking.action_assign()
+                        else:
+                            print(f"No picking found for PO: {bill.invoice_origin}")
+
                     #     if po:
                     #         other_moves.write({
                     #             'purchase_id': po.id,
