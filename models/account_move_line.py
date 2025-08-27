@@ -15,7 +15,7 @@ class AccountMoveLine(models.Model):
         'account.move',
         string="Vendor Bills",
         domain="[('move_type', '=', 'in_invoice'), ('state', '=', 'posted'), ('partner_id', '=', partner_id), ('product_ids', 'in', product_id)]",
-        store="True"
+        store=True
     )
 
 
