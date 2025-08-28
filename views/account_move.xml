@@ -6,12 +6,34 @@
     <field name="arch" type="xml">
     
      
-      <!-- <xpath expr="//field[@name='partner_id']" position="after">
-        <field name="vendor_purchase_bill_ids" widget="many2many_tags"/>
-      </xpath> -->
+      
 
+        <!-- Replace the original button -->
+        <xpath expr="//header/button[@name='button_draft']" position="replace">
+        <button name="button_draft"
+                string="Reset to Draft"
+                type="object"
+                groups="account.group_account_invoice"
+                data-hotkey="q"
+                attrs="{'invisible': ['|', ('show_reset_to_draft_button', '=', False), ('invoice_origin', '=', False)]}"/>
+        </xpath>
 
+        <xpath expr="//form/sheet" position="before">
+                <field name="return_picking_ids" invisible="1"/>
+                <field name="invoice_origin" invisible="1"/>
 
+        </xpath>
+
+        <xpath expr="//div[@class='oe_button_box']" position="inside">
+            <button name="action_view_return_pickings"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-truck"
+                    attrs="{'invisible': [('return_picking_count', '=', 0)]}">
+                <field name="return_picking_count" widget="statinfo" string="Receipt"/>
+            </button>
+        </xpath>
+      
       
       <xpath expr="//field[@name='invoice_line_ids']" position="replace">
     
@@ -43,7 +65,7 @@
                                                     and [('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
                                                     or [('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
                                                "/>
-                                        <field name="vendor_bills" />
+                                        <field name="vendor_bills"  />
                                         <field name="name" widget="section_and_note_text" optional="show"/>
                                         <field name="account_id"
                                                context="{'partner_id': partner_id, 'move_type': parent.move_type}"

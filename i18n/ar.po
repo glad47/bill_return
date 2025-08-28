@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* store_product_batch
+# 	* bill_return
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-22 16:12+0000\n"
-"PO-Revision-Date: 2025-08-22 16:12+0000\n"
+"POT-Creation-Date: 2025-08-28 15:08+0000\n"
+"PO-Revision-Date: 2025-08-28 15:08+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,353 +15,184 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: store_product_batch
-#: model:ir.module.category,description:store_product_batch.module_category_store_batch
-msgid "Access control for store batch users."
-msgstr "التحكم في الوصول لمستخدمي جناديل المتجر."
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Add a line"
+msgstr "إضافة سطر"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__active
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__active
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_branch_search
-msgid "Active"
-msgstr "نشط"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Add a note"
+msgstr "إضافة ملاحظة"
 
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Active Batches"
-msgstr "الجناديل النشطة"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Add a section"
+msgstr "إضافة قسم"
 
-#. module: store_product_batch
-#: model:res.groups,name:store_product_batch.group_store_batch_admin
-msgid "Administrator"
-msgstr "مدير النظام"
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_purchase_order__linked_batch_bill_count
+msgid "Batch Bill Count"
+msgstr "عدد الفواتير المجمعة"
 
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "All Batches"
-msgstr "كل الجناديل"
+#. module: bill_return
+#: model:ir.model,name:bill_return.model_res_partner
+msgid "Contact"
+msgstr "جهة الاتصال"
 
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_branch_search
-msgid "Archived"
-msgstr "مؤرشف"
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_res_partner__credit_note_count
+#: model:ir.model.fields,field_description:bill_return.field_res_users__credit_note_count
+#: model_terms:ir.ui.view,arch_db:bill_return.view_partner_form_inherit_credit_note
+msgid "Credit Notes"
+msgstr "إشعارات دائن"
 
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Batch Filters"
-msgstr "مرشحات الجناديل"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Description"
+msgstr "الوصف"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__name
-msgid "Batch Name"
-msgstr "اسم الجندول"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Disc.%"
+msgstr "نسبة الخصم"
 
-#. module: store_product_batch
-#: model:ir.ui.menu,name:store_product_batch.menu_store_batch
-msgid "Batches"
-msgstr "الجناديل"
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__branch_id
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location__branch_id
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Branch"
-msgstr "فرع"
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__name
-msgid "Branch Name"
-msgstr "اسم الفرع"
-
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-msgid "Branch:"
-msgstr "الفرع:"
-
-#. module: store_product_batch
-#: model:ir.ui.menu,name:store_product_batch.menu_store_branch
-msgid "Branches"
-msgstr "الفروع"
-
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-msgid "Consumed Qty"
-msgstr "الكمية المستهلكة"
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__consumed_qty
-msgid "Consumed Quantity"
-msgstr "الكمية المستهلكة"
-
-#. module: store_product_batch
-#: model_terms:ir.actions.act_window,help:store_product_batch.action_store_batch
-msgid "Create and manage your store batch here."
-msgstr "أنشئ وأدر جناديل المتجر هنا."
-
-#. module: store_product_batch
-#: model_terms:ir.actions.act_window,help:store_product_batch.action_store_branch_view
-msgid "Create and manage your store branches here."
-msgstr "أنشئ وأدر فروع المتجر هنا."
-
-#. module: store_product_batch
-#: model_terms:ir.actions.act_window,help:store_product_batch.action_store_location
-msgid "Create and manage your store locations here."
-msgstr "أنشئ وأدر مواقع المتجر هنا."
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__create_uid
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__create_uid
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location__create_uid
-msgid "Created by"
-msgstr "أنشئ بواسطة"
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__create_date
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__create_date
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location__create_date
-msgid "Created on"
-msgstr "تاريخ الإنشاء"
-
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__display_name
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__display_name
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location__display_name
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_account_move_line__display_name
 msgid "Display Name"
 msgstr "الاسم المعروض"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__earned_amount
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-msgid "Earned Amount"
-msgstr "المبلغ المكتسب"
+#. module: bill_return
+#: model:ir.model,name:bill_return.model_account_move
+msgid "Journal Entry"
+msgstr "قيد اليومية"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__end_time
-msgid "End Time"
-msgstr "وقت الانتهاء"
+#. module: bill_return
+#: model:ir.model,name:bill_return.model_account_move_line
+msgid "Journal Item"
+msgstr "عنصر اليومية"
 
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Expired Batches"
-msgstr "الجناديل المنتهية"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Journal Items"
+msgstr "عناصر اليومية"
 
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Group By"
-msgstr "تجميع حسب"
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_purchase_order__linked_batch_bill_ids
+msgid "Linked Batch Vendor Bills"
+msgstr "فواتير الموردين المرتبطة كمجموعة"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__id
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__id
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location__id
-msgid "ID"
-msgstr "المعرف"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Note"
+msgstr "ملاحظة"
 
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Inactive Batches"
-msgstr "الجناديل غير النشطة"
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch____last_update
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch____last_update
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location____last_update
-msgid "Last Modified on"
-msgstr "آخر تعديل في"
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__write_uid
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__write_uid
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location__write_uid
-msgid "Last Updated by"
-msgstr "آخر تحديث بواسطة"
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__write_date
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__write_date
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location__write_date
-msgid "Last Updated on"
-msgstr "آخر تحديث في"
-
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__location_id
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Location"
-msgstr "الموقع"
-
-#. module: store_product_batch
-#: model:ir.ui.menu,name:store_product_batch.menu_store_location
-msgid "Locations"
-msgstr "المواقع"
-
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Ongoing Batches"
-msgstr "الجناديل الجارية"
-
-#. module: store_product_batch
+#. module: bill_return
 #. odoo-javascript
-#: code:addons/store_product_batch/static/src/xml/tree_button.xml:0
+#: code:addons/bill_return/static/src/xml/tree_button.xml:0
 #, python-format
 msgid "Open Wizard"
 msgstr "فتح المعالج"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__pos_session_ids
-msgid "POS"
-msgstr "نقطة البيع"
+#. module: bill_return
+#: model:ir.model.fields,help:bill_return.field_account_bank_statement_line__return_picking_ids
+#: model:ir.model.fields,help:bill_return.field_account_move__return_picking_ids
+#: model:ir.model.fields,help:bill_return.field_account_payment__return_picking_ids
+msgid "Pickings created to return goods for this bill"
+msgstr "التحويلات التي تم إنشاؤها لإرجاع البضائع لهذه الفاتورة"
 
-#. module: store_product_batch
-#: model:ir.model,name:store_product_batch.model_pos_config
-msgid "Point of Sale Configuration"
-msgstr "تهيئة نقطة البيع"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Price"
+msgstr "السعر"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__processed_order_ids
-msgid "Processed Orders"
-msgstr "الطلبات المعالجة"
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__product_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_move__product_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_payment__product_ids
+msgid "Products in Bill"
+msgstr "المنتجات في الفاتورة"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__product_id
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Product"
-msgstr "المنتج"
+#. module: bill_return
+#: model:ir.model,name:bill_return.model_purchase_order
+msgid "Purchase Order"
+msgstr "أمر الشراء"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location__code
-msgid "Reference"
-msgstr "الرمز المرجعي"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Quantity:"
+msgstr "الكمية:"
 
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Receipt"
+msgstr "الإيصال"
 
-#. module: store_product_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_batch__start_time
-msgid "Start Time"
-msgstr "وقت البدء"
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__vendor_purchase_bill_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_move__vendor_purchase_bill_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_payment__vendor_purchase_bill_ids
+msgid "Related Vendor Bills"
+msgstr "فواتير المورد المرتبطة"
 
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Started Today"
-msgstr "بدأ اليوم"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Reset to Draft"
+msgstr "إعادة إلى المسودة"
 
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_search
-msgid "Status"
-msgstr "الحالة"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.purchase_order_form_custom
+msgid "Return Bills"
+msgstr "فواتير الإرجاع"
 
-#. module: store_product_batch
-#: model:ir.module.category,name:store_product_batch.module_category_store_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_form
-msgid "Store Batch"
-msgstr "الجندول"
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__return_picking_count
+#: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__return_picking_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_move__return_picking_count
+#: model:ir.model.fields,field_description:bill_return.field_account_move__return_picking_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_payment__return_picking_count
+#: model:ir.model.fields,field_description:bill_return.field_account_payment__return_picking_ids
+msgid "Return Pickings"
+msgstr "تحويلات الإرجاع"
 
-#. module: store_product_batch
-#: model:ir.actions.server,name:store_product_batch.ir_cron_store_batch_tracker_ir_actions_server
-#: model:ir.cron,cron_name:store_product_batch.ir_cron_store_batch_tracker
-msgid "Store Batch Consumption Tracker"
-msgstr "متعقب استهلاك جندول المتجر"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Section"
+msgstr "قسم"
 
-#. module: store_product_batch
-#: model:ir.actions.report,name:store_product_batch.action_store_batch_web_report
-#: model:ir.ui.menu,name:store_product_batch.menu_store_root_web_report
-msgid "Store Batch Report"
-msgstr "تقرير الجناديل"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Subtotal"
+msgstr "الإجمالي الفرعي"
 
-#. module: store_product_batch
-#: model:ir.model,name:store_product_batch.model_report_store_product_batch_report_store_batch_template
-msgid "Store Batch Summary Report"
-msgstr "تقرير ملخص جندول المتجر"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Total"
+msgstr "الإجمالي"
 
-#. module: store_product_batch
-#: model:ir.model,name:store_product_batch.model_store_batch
-msgid "Store Batch in Store"
-msgstr "جندول المتجر"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Unit Price:"
+msgstr "سعر الوحدة:"
 
-#. module: store_product_batch
-#: model:ir.actions.act_window,name:store_product_batch.action_store_batch
-#: model:ir.model.fields,field_description:store_product_batch.field_store_location__batch_ids
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_tree
-msgid "Store Batches"
-msgstr "جناديل المتجر"
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "UoM"
+msgstr "وحدة القياس"
 
-#. module: store_product_batch
-#: model:ir.model,name:store_product_batch.model_store_branch
-#: model:ir.model.fields,field_description:store_product_batch.field_pos_config__branch_id
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_branch_form_simple
-msgid "Store Branch"
-msgstr "فرع المتجر"
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_account_move_line__vendor_bills
+msgid "Vendor Bills"
+msgstr "فواتير المورد"
 
-#. module: store_product_batch
-#: model:ir.actions.act_window,name:store_product_batch.action_store_branch_view
-msgid "Store Branches"
-msgstr "فروع المتجر"
+#. module: bill_return
+#: model:ir.ui.menu,name:bill_return.menu_vendor_list_root
+msgid "Vendor Management"
+msgstr "إدارة الموردين"
 
-#. module: store_product_batch
-#: model:ir.model,name:store_product_batch.model_store_location
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_location_form
-msgid "Store Location"
-msgstr "موقع المتجر"
+#. module: bill_return
+#: model:ir.actions.act_window,name:bill_return.action_vendor_list
+#: model:ir.ui.menu,name:bill_return.menu_vendor_list
+msgid "Vendors"
+msgstr "الموردون"
 
-#. module: store_product_batch
-#: model:ir.actions.act_window,name:store_product_batch.action_store_location
-#: model:ir.model.fields,field_description:store_product_batch.field_store_branch__location_ids
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_location_tree
-msgid "Store Locations"
-msgstr "مواقع المتجر"
-
-#. module: store_product_batch
-#: model:ir.ui.menu,name:store_product_batch.menu_store_root
-msgid "Store Product Tracker"
-msgstr "متعقب الجناديل"
-
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-msgid "Top Locations by Consumed Quantity"
-msgstr "أفضل المواقع حسب الكمية المستهلكة"
-
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-msgid "Top Locations by Earned Amount"
-msgstr "أفضل المواقع حسب المبلغ المكتسب"
-
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-msgid "Top Products"
-msgstr "أفضل المنتجات"
-
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-msgid "Total Consumed:"
-msgstr "إجمالي المستهلك:"
-
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.view_store_batch_tree
-msgid "Update Batch Info"
-msgstr "تحديث معلومات الجناديل"
-
-#. module: store_product_batch
-#: model:res.groups,name:store_product_batch.group_store_batch_user
-msgid "User"
-msgstr "مستخدم"
-
-#. module: store_product_batch
-#. odoo-python
-#: code:addons/store_product_batch/models/store_batch.py:0
-#, python-format
-msgid "You cannot reactivate a store batch that has already ended."
-msgstr "لا يمكنك إعادة تنشيط جندول المتجر الذي انتهى بالفعل."
-
-#. module: store_product_batch
-#. odoo-python
-#: code:addons/store_product_batch/models/store_branch.py:0
-#, python-format
-msgid "You must archive the branch before deleting it."
-msgstr "يجب أرشفة الفرع قبل حذفه."
-
-#. module: store_product_batch
-#: model_terms:ir.ui.view,arch_db:store_product_batch.report_store_batch_template
-msgid "|\n                  Total Earned:"
-msgstr "|\n                  إجمالي المكتسب:"
