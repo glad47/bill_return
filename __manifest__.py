@@ -8,8 +8,8 @@
     'depends': ['base', 'account','purchase'],
     'data': [
         'security/ir.model.access.csv', 
-        'views/vendor_view.xml',
-        'views/res_partner_credit_note_button.xml', 
+        # 'views/vendor_view.xml',
+        # 'views/res_partner_credit_note_button.xml', 
         'views/account_move.xml', 
         'views/purchase_order.xml',        
     ],

@@ -4,20 +4,35 @@ class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
 
-
-    display_name = fields.Char(
-        string="Display Name",
-        compute='_compute_display_name',
-        store=True
-    )
-
     vendor_bills = fields.Many2one(
         'account.move',
         string="Vendor Bills",
-        domain="[('move_type', '=', 'in_invoice'), ('state', '=', 'posted'), ('partner_id', '=', partner_id), ('product_ids', 'in', product_id)]",
         store=True
     )
 
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        for line in self:
+            if line.product_id:
+                vendor_bills = self.env['account.move'].search([
+                    ('move_type', '=', 'in_invoice'),
+                    ('state', '=', 'posted'),
+                    ('partner_id', '=', line.partner_id.id),
+                    ('invoice_line_ids.product_id', 'in', [line.product_id.id])
+                ])
+                print(vendor_bills)
+                return {
+                    'domain': {
+                        'vendor_bills': [('id', 'in', vendor_bills.ids)]
+                    }
+                }
+            else:
+                return {
+                    'domain': {
+                        'vendor_bills': []
+                    }
+                }
 
 
     @api.onchange('vendor_bills')

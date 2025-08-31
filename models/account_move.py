@@ -4,14 +4,6 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
     
 
-    vendor_purchase_bill_ids = fields.Many2many(
-        'account.move',
-        'account_move_vendor_purchase_rel',  # optional: custom relation table name
-        'move_id', 'bill_id',  
-        string="Related Vendor Bills",
-        domain="[('state', '=', 'posted'), ('move_type', '=', 'in_invoice'), ('partner_id', '=', partner_id)]"
-    )
-
     return_picking_ids = fields.Many2many(
         'stock.picking',
         string='Return Pickings',
@@ -20,13 +12,7 @@ class AccountMove(models.Model):
     )
 
 
-    product_ids = fields.Many2many(
-        'product.product',
-        string="Products in Bill",
-        compute='_compute_product_ids',
-        store=True
-    )
-
+   
     return_picking_count = fields.Integer(
         string='Return Pickings',
         compute='_compute_return_picking_count'
@@ -36,10 +22,7 @@ class AccountMove(models.Model):
         for rec in self:
             rec.return_picking_count = len(rec.return_picking_ids)
 
-    @api.depends('invoice_line_ids.product_id')
-    def _compute_product_ids(self):
-        for move in self:
-            move.product_ids = move.invoice_line_ids.mapped('product_id')
+  
 
 
     def action_view_return_pickings(self):
@@ -54,8 +37,6 @@ class AccountMove(models.Model):
         }
 
     def action_post(self):
-        print("i am in my custome method -- overriding")
-
         moves_with_payments = self.filtered('payment_id')
         other_moves = self - moves_with_payments
         if moves_with_payments:
@@ -89,7 +70,7 @@ class AccountMove(models.Model):
                                 }))
 
 
-                            print(return_lines)    
+                  
 
                             # Create return wizard and trigger return
                             wizard = self.env['stock.return.picking'].with_context(active_id=picking.id).create({
@@ -97,10 +78,10 @@ class AccountMove(models.Model):
                                 'product_return_moves': return_lines,
                                 'company_id': picking.company_id.id,
                             })
-                            print("before")
+                        
                             return_action = wizard.create_returns()
                             
-                            print("after")
+                        
                             if return_action and 'res_id' in return_action:
                                 return_picking = self.env['stock.picking'].browse(return_action['res_id'])
                                 return_ids.append(return_picking.id)
