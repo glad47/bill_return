@@ -12,6 +12,13 @@ class AccountMove(models.Model):
     )
 
 
+    storage_id = fields.Many2one(
+        'stock.location',
+        string='Storage Location',
+        store=True
+    )
+
+
    
     return_picking_count = fields.Integer(
         string='Return Pickings',
@@ -50,12 +57,54 @@ class AccountMove(models.Model):
                 for bill in line.vendor_bills:
                     if bill.invoice_origin:
                         po = self.env['purchase.order'].search([('name', '=', bill.invoice_origin)], limit=1)
-                        if po and po.picking_ids:
-                            picking = {}
+                        if po:
+                            oiginal_pk = {}
                             for pk in po.picking_ids:
                                 if pk.origin == bill.invoice_origin:
-                                    picking = pk
+                                    oiginal_pk = pk
+
+
+                            incoming_type = self.env['stock.picking.type'].search([('code', '=', 'incoming'),], limit=1)
+                            location = self.env['stock.location'].search([
+                                ('name', '=', 'Vendors')
+                            ], limit=1)
+                            picking = self.env['stock.picking'].create({
+                                'partner_id' : other_moves.partner_id.id,
+                                'picking_type_id': incoming_type.id,             
+                                'location_id': oiginal_pk.location_id.id,            
+                                'location_dest_id': other_moves.storage_id.id,     
+                                'company_id': other_moves.company_id.id,              
+                                'move_type': 'direct',                          
+                                'immediate_transfer': False,                                                                   
+                                'origin': 'Manual Picking Creation',             
+                                                    
+                            })
+
+                            po.picking_ids += picking
+
+
+                            for pk_line in oiginal_pk.move_line_ids:
+                                self.env['stock.move.line'].create({
+                                    'move_id': picking.move_ids.filtered(lambda m: m.product_id == pk_line.product_id).id,
+                                    'picking_id': picking.id,
+                                    'product_id': pk_line.product_id.id,
+                                    'product_uom_id': pk_line.product_uom_id.id,
+                                    'qty_done': pk_line.qty_done,
+                                    'location_id': pk_line.location_id.id,
+                                    'location_dest_id': pk_line.location_dest_id.id,
+                                    'company_id': picking.company_id.id,
+                                })
+                                        
                             # Build product_return_moves from picking
+                            print("setting info")
+
+                            # print("################before#############")
+                            # print(picking.read()[0])
+                            # print("################after#############")
+                            # picking.location_id =other_moves.storage_id
+
+                            # print(picking.read()[0])
+                            # print(other_moves.storage_id.read()[0])
                             return_lines = []
                             for move in picking.move_line_ids:
                                 # if move.product_id.type != 'product':
@@ -71,16 +120,25 @@ class AccountMove(models.Model):
 
 
                   
+                           
 
+
+                            
+
+                           
                             # Create return wizard and trigger return
                             wizard = self.env['stock.return.picking'].with_context(active_id=picking.id).create({
                                 'picking_id': picking.id,
                                 'product_return_moves': return_lines,
                                 'company_id': picking.company_id.id,
+                                'location_id': location.id,
                             })
                         
                             return_action = wizard.create_returns()
                             
+
+                            # print(move.location_id.id)
+                            # print(other_moves.storage_id)
                         
                             if return_action and 'res_id' in return_action:
                                 return_picking = self.env['stock.picking'].browse(return_action['res_id'])
@@ -117,6 +175,7 @@ class AccountMove(models.Model):
                                         else:
                                             new_qty = po_line.qty_invoiced + (line.quantity * -1)
                                             po_line.qty_invoiced = new_qty   
+                                            
 
                                 # Link the bill to the PO
                                 if other_moves.id not in po.linked_batch_bill_ids.ids:

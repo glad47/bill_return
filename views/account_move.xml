@@ -21,8 +21,16 @@
         <xpath expr="//form/sheet" position="before">
                 <field name="return_picking_ids" invisible="1"/>
                 <field name="invoice_origin" invisible="1"/>
-
         </xpath>
+
+        <xpath expr="//field[@name='ref'][@attrs]" position="after">
+            <field name="storage_id" 
+                string="Storage Location" 
+                required="1"
+                attrs="{'readonly': [('state', '=', 'posted')]}"/>
+        </xpath>
+
+
 
         <xpath expr="//div[@class='oe_button_box']" position="inside">
             <button name="action_view_return_pickings"
@@ -65,7 +73,7 @@
                                                     and [('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
                                                     or [('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
                                                "/>
-                                        <field name="vendor_bills"  />
+                                        <field name="vendor_bills" attrs="{'readonly': ['|', ('partner_id', '=', False), ('product_id', '=', False)]}" />
                                         <field name="name" widget="section_and_note_text" optional="show"/>
                                         <field name="account_id"
                                                context="{'partner_id': partner_id, 'move_type': parent.move_type}"
