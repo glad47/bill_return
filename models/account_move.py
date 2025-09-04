@@ -11,6 +11,11 @@ class AccountMove(models.Model):
         store=True
     )
 
+    storage_id = fields.Many2one(
+        'stock.location',
+        string='Storage Location',
+        store=True
+    )
 
    
     return_picking_count = fields.Integer(
@@ -70,13 +75,16 @@ class AccountMove(models.Model):
                                 }))
 
 
-                  
+                            location = self.env['stock.location'].search([
+                                            ('name', '=', 'Vendors')
+                            ], limit=1) 
 
                             # Create return wizard and trigger return
                             wizard = self.env['stock.return.picking'].with_context(active_id=picking.id).create({
                                 'picking_id': picking.id,
                                 'product_return_moves': return_lines,
                                 'company_id': picking.company_id.id,
+                                'location_id': location.id,
                             })
                         
                             return_action = wizard.create_returns()
