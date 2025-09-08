@@ -7,6 +7,13 @@
     
      
       
+        <xpath expr="//group[@id='header_right_group']" position="after">
+            <group>
+                <field name="storage_id" domain="[('complete_name', 'in', ['TWH/STOCK', 'TH/STOCK'])]"/>
+            </group>
+        </xpath>
+
+
 
         <!-- Replace the original button -->
         <xpath expr="//header/button[@name='button_draft']" position="replace">
@@ -18,11 +25,13 @@
                 attrs="{'invisible': ['|', ('show_reset_to_draft_button', '=', False), ('invoice_origin', '=', False)]}"/>
         </xpath>
 
-        <xpath expr="//form/sheet" position="before">
-                <field name="return_picking_ids" invisible="1"/>
-                <field name="invoice_origin" invisible="1"/>
+        <!-- <xpath expr="//group[@id='header_right_group']" position="after">
+                <group>
+                    <field name="storage_id"
+                        domain="[('complete_name', 'in', ['TWH/STOCK', 'TH/STOCK'])]"/>
+                </group>
+        </xpath> -->
 
-        </xpath>
 
         <xpath expr="//div[@class='oe_button_box']" position="inside">
             <button name="action_view_return_pickings"
@@ -66,6 +75,7 @@
                                                     or [('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
                                                "/>
                                         <field name="vendor_bills"  />
+                                        <field name="location_name" />
                                         <field name="name" widget="section_and_note_text" optional="show"/>
                                         <field name="account_id"
                                                context="{'partner_id': partner_id, 'move_type': parent.move_type}"
@@ -201,4 +211,8 @@
 
     </field>
   </record>
+
+
+
+
 </odoo>

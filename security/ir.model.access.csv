@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_account_move_line_user,account.move.line,model_account_move_line,base.group_user,1,1,1,1
 access_account_move_user,account.move,model_account_move,base.group_user,1,1,1,1
+access_bill_return_config_manager,Bill Return Config Access,model_bill_return_config,account.group_account_manager,1,1,1,1

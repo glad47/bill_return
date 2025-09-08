@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="account_bills_menu"
+          name="Bills"
+          parent="account.menu_finance_configuration"
+          sequence="25"
+          groups="account.group_account_manager"/>
+
+     <menuitem id="menu_bulk_bill_return_branch"
+                name="Bulk Bill Return"
+                parent="account_bills_menu"
+                action="bill_return.action_bulk_bill_return_server"
+                sequence="51"
+                groups="account.group_account_manager"/>
+  
+</odoo>

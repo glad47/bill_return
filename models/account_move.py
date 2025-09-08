@@ -1,5 +1,5 @@
 from odoo import models, fields, api,Command
-
+from odoo.exceptions import ValidationError
 class AccountMove(models.Model):
     _inherit = 'account.move'
     
@@ -14,8 +14,11 @@ class AccountMove(models.Model):
     storage_id = fields.Many2one(
         'stock.location',
         string='Storage Location',
+        domain=lambda self: [('id', 'in', self._get_allowed_storage_ids())],
+        default=lambda self: self._get_default_storage_id(),
         store=True
     )
+
 
    
     return_picking_count = fields.Integer(
@@ -26,6 +29,21 @@ class AccountMove(models.Model):
     def _compute_return_picking_count(self):
         for rec in self:
             rec.return_picking_count = len(rec.return_picking_ids)
+    
+
+
+    def _get_allowed_storage_ids(self):
+        config = self.env['bill.return.config'].search([], limit=1)
+        return config.location_ids.ids if config else []
+
+    def _get_default_storage_id(self):
+        config = self.env['bill.return.config'].search([], limit=1)
+        return config.default_location_id.id if config and config.default_location_id else False
+
+    def _get_default_transit_location_id(self):
+        config = self.env['bill.return.config'].search([], limit=1)
+        return config.default_intermediate_location_id.id if config and config.default_intermediate_location_id else False
+
 
   
 
@@ -56,10 +74,12 @@ class AccountMove(models.Model):
                     if bill.invoice_origin:
                         po = self.env['purchase.order'].search([('name', '=', bill.invoice_origin)], limit=1)
                         if po and po.picking_ids:
+                           
                             picking = {}
                             for pk in po.picking_ids:
                                 if pk.origin == bill.invoice_origin:
                                     picking = pk
+                                 
                             # Build product_return_moves from picking
                             return_lines = []
                             for move in picking.move_line_ids:
@@ -128,7 +148,41 @@ class AccountMove(models.Model):
 
                                 # Link the bill to the PO
                                 if other_moves.id not in po.linked_batch_bill_ids.ids:
-                                    po.write({'linked_batch_bill_ids': [(4, other_moves.id)]})       
+                                    po.write({'linked_batch_bill_ids': [(4, other_moves.id)]})   
+                                
+
+                                if picking.location_dest_id.complete_name != other_moves.storage_id.complete_name:
+                                    print("yes")
+                                else:
+                                    print("no — creating receipt picking from intermediate to storage")
+
+                                    config = self.env['bill.return.config'].search([], limit=1)
+                                    if not config or not config.default_intermediate_location_id or not config.default_location_id:
+                                        raise ValidationError("Bill Return Configuration is missing default locations.")
+
+                                    picking_type = config.picking_type_ids.filtered(lambda pt: pt.code == 'incoming')
+                                    if not picking_type:
+                                        raise ValidationError("No incoming picking type configured for bill return.")
+
+                                    new_picking = self.env['stock.picking'].create({
+                                        'partner_id': other_moves.partner_id.id,
+                                        'picking_type_id': picking_type[0].id,
+                                        'location_id': config.default_intermediate_location_id.id,
+                                        'location_dest_id': config.default_location_id.id,
+                                        'origin': other_moves.name,
+                                        'move_ids_without_package': [(0, 0, {
+                                            'name': 'Receipt from intermediate',
+                                            'product_id': move.product_id.id,  # You must define this
+                                            'product_uom': move.product_uom.id,     # And this
+                                            'product_uom_qty': line.quantity,           # Or your desired quantity
+                                            'location_id': config.default_intermediate_location_id.id,
+                                            'location_dest_id': config.default_location_id.id,
+                                        })]
+                                    })
+
+                                    print(f"Created receipt picking: {new_picking.name}")
+  
+
 
 
                         else:
