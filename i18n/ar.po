@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-28 15:08+0000\n"
-"PO-Revision-Date: 2025-08-28 15:08+0000\n"
+"POT-Creation-Date: 2025-09-09 12:51+0000\n"
+"PO-Revision-Date: 2025-09-09 12:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
 msgid "Add a line"
-msgstr "إضافة سطر"
+msgstr "إضافة بند"
 
 #. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
@@ -31,21 +31,66 @@ msgid "Add a section"
 msgstr "إضافة قسم"
 
 #. module: bill_return
+#: model:ir.model.fields,help:bill_return.field_bill_return_config__location_ids
+msgid "All locations involved in this operation"
+msgstr "جميع المواقع المشاركة في هذه العملية"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_account_move_line__qty_allowed
+msgid "Allowed Quantity"
+msgstr "الكمية المسموح بها"
+
+#. module: bill_return
 #: model:ir.model.fields,field_description:bill_return.field_purchase_order__linked_batch_bill_count
 msgid "Batch Bill Count"
-msgstr "عدد الفواتير المجمعة"
+msgstr "عدد فواتير الدفعة"
 
 #. module: bill_return
-#: model:ir.model,name:bill_return.model_res_partner
-msgid "Contact"
-msgstr "جهة الاتصال"
+#: model:ir.ui.menu,name:bill_return.account_bills_menu
+msgid "Bills"
+msgstr "الفواتير"
 
 #. module: bill_return
-#: model:ir.model.fields,field_description:bill_return.field_res_partner__credit_note_count
-#: model:ir.model.fields,field_description:bill_return.field_res_users__credit_note_count
-#: model_terms:ir.ui.view,arch_db:bill_return.view_partner_form_inherit_credit_note
-msgid "Credit Notes"
-msgstr "إشعارات دائن"
+#: model:ir.actions.server,name:bill_return.action_bulk_bill_return_server
+#: model:ir.ui.menu,name:bill_return.menu_bulk_bill_return_branch
+#: model_terms:ir.ui.view,arch_db:bill_return.view_bulk_bill_return_form
+msgid "Bulk Bill Return"
+msgstr "إرجاع الفواتير بالجملة"
+
+#. module: bill_return
+#: model:ir.model,name:bill_return.model_bill_return_config
+msgid "Bulk Bill Return Operation Configuration"
+msgstr "تهيئة عملية إرجاع الفواتير بالجملة"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type__config_id
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor__config_id
+msgid "Config"
+msgstr "الإعداد"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__name
+msgid "Configuration Name"
+msgstr "اسم التهيئة"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__create_uid
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type__create_uid
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor__create_uid
+msgid "Created by"
+msgstr "تم الإنشاء بواسطة"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__create_date
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type__create_date
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor__create_date
+msgid "Created on"
+msgstr "تاريخ الإنشاء"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__default_location_id
+msgid "Default Storage Location"
+msgstr "موقع التخزين الافتراضي"
 
 #. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
@@ -57,10 +102,30 @@ msgstr "الوصف"
 msgid "Disc.%"
 msgstr "نسبة الخصم"
 
+
 #. module: bill_return
-#: model:ir.model.fields,field_description:bill_return.field_account_move_line__display_name
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__display_name
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type__display_name
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor__display_name
 msgid "Display Name"
 msgstr "الاسم المعروض"
+
+#. module: bill_return
+#: model:ir.model.fields,help:bill_return.field_bill_return_config__location_picking_type_map_ids
+msgid "Explicit mapping between each location and its internal picking type"
+msgstr "ربط صريح بين كل موقع ونوع الالتقاط الداخلي الخاص به"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__id
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type__id
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor__id
+msgid "ID"
+msgstr "المُعرّف"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type__picking_type_id
+msgid "Internal Picking Type"
+msgstr "نوع الالتقاط الداخلي"
 
 #. module: bill_return
 #: model:ir.model,name:bill_return.model_account_move
@@ -78,28 +143,62 @@ msgid "Journal Items"
 msgstr "عناصر اليومية"
 
 #. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config____last_update
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type____last_update
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__write_uid
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type__write_uid
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__write_date
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type__write_date
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: bill_return
 #: model:ir.model.fields,field_description:bill_return.field_purchase_order__linked_batch_bill_ids
 msgid "Linked Batch Vendor Bills"
-msgstr "فواتير الموردين المرتبطة كمجموعة"
+msgstr "فواتير المورد المرتبطة بالدفعة"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_purchase_order__linked_picking_ids
+msgid "Linked Stock Movement"
+msgstr "حركات المخزون المرتبطة"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_account_move_line__location_name
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_picking_type__location_id
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor__location_id
+msgid "Location"
+msgstr "الموقع"
+
+#. module: bill_return
+#: model:ir.model,name:bill_return.model_bill_return_location_picking_type
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__location_picking_type_map_ids
+#: model_terms:ir.ui.view,arch_db:bill_return.view_bulk_bill_return_form
+msgid "Location-Picking Type Mapping"
+msgstr "ربط الموقع بنوع الالتقاط"
+
+#. module: bill_return
+#: model:ir.model,name:bill_return.model_bill_return_location_vendor
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__location_vendor_map_ids
+#: model_terms:ir.ui.view,arch_db:bill_return.view_bulk_bill_return_form
+msgid "Location-Vendor Mapping"
+msgstr "ربط الموقع بالمورد"
 
 #. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
 msgid "Note"
 msgstr "ملاحظة"
 
-#. module: bill_return
-#. odoo-javascript
-#: code:addons/bill_return/static/src/xml/tree_button.xml:0
-#, python-format
-msgid "Open Wizard"
-msgstr "فتح المعالج"
-
-#. module: bill_return
-#: model:ir.model.fields,help:bill_return.field_account_bank_statement_line__return_picking_ids
-#: model:ir.model.fields,help:bill_return.field_account_move__return_picking_ids
-#: model:ir.model.fields,help:bill_return.field_account_payment__return_picking_ids
-msgid "Pickings created to return goods for this bill"
-msgstr "التحويلات التي تم إنشاؤها لإرجاع البضائع لهذه الفاتورة"
 
 #. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
@@ -107,11 +206,9 @@ msgid "Price"
 msgstr "السعر"
 
 #. module: bill_return
-#: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__product_ids
-#: model:ir.model.fields,field_description:bill_return.field_account_move__product_ids
-#: model:ir.model.fields,field_description:bill_return.field_account_payment__product_ids
-msgid "Products in Bill"
-msgstr "المنتجات في الفاتورة"
+#: model:ir.model.fields,help:bill_return.field_bill_return_config__default_location_id
+msgid "Primary location used by default for bill returns"
+msgstr "الموقع الأساسي المستخدم افتراضيًا لإرجاع الفواتير"
 
 #. module: bill_return
 #: model:ir.model,name:bill_return.model_purchase_order
@@ -126,14 +223,7 @@ msgstr "الكمية:"
 #. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
 msgid "Receipt"
-msgstr "الإيصال"
-
-#. module: bill_return
-#: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__vendor_purchase_bill_ids
-#: model:ir.model.fields,field_description:bill_return.field_account_move__vendor_purchase_bill_ids
-#: model:ir.model.fields,field_description:bill_return.field_account_payment__vendor_purchase_bill_ids
-msgid "Related Vendor Bills"
-msgstr "فواتير المورد المرتبطة"
+msgstr "الاستلام"
 
 #. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
@@ -148,17 +238,52 @@ msgstr "فواتير الإرجاع"
 #. module: bill_return
 #: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__return_picking_count
 #: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__return_picking_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__transfer_picking_count
 #: model:ir.model.fields,field_description:bill_return.field_account_move__return_picking_count
 #: model:ir.model.fields,field_description:bill_return.field_account_move__return_picking_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_move__transfer_picking_count
 #: model:ir.model.fields,field_description:bill_return.field_account_payment__return_picking_count
 #: model:ir.model.fields,field_description:bill_return.field_account_payment__return_picking_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_payment__transfer_picking_count
 msgid "Return Pickings"
-msgstr "تحويلات الإرجاع"
+msgstr "عمليات الالتقاط للإرجاع"
 
 #. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
 msgid "Section"
 msgstr "قسم"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_purchase_order__linked_stock_movement_count
+msgid "Stock Movement Count"
+msgstr "عدد حركات المخزون"
+
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.purchase_order_form_custom
+msgid "Stock Movements"
+msgstr "حركات المخزون"
+
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_bulk_bill_return_form
+msgid "Storage Configuration"
+msgstr "اعداد فواتير الارجاع"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__storage_id
+#: model:ir.model.fields,field_description:bill_return.field_account_move__storage_id
+#: model:ir.model.fields,field_description:bill_return.field_account_payment__storage_id
+msgid "Storage Location"
+msgstr "موقع التخزين"
+
+#. module: bill_return
+#: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
+msgid "Storage Movement"
+msgstr "حركة المخزون"
+
+#. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_config__location_ids
+msgid "Storages"
+msgstr "المخازن"
 
 #. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
@@ -171,6 +296,14 @@ msgid "Total"
 msgstr "الإجمالي"
 
 #. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_account_bank_statement_line__transfer_picking_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_move__transfer_picking_ids
+#: model:ir.model.fields,field_description:bill_return.field_account_payment__transfer_picking_ids
+msgid "Transfer Pickings"
+msgstr "حركة المخزون"
+
+
+#. module: bill_return
 #: model_terms:ir.ui.view,arch_db:bill_return.view_move_form_custom
 msgid "Unit Price:"
 msgstr "سعر الوحدة:"
@@ -181,18 +314,12 @@ msgid "UoM"
 msgstr "وحدة القياس"
 
 #. module: bill_return
+#: model:ir.model.fields,field_description:bill_return.field_bill_return_location_vendor__vendor_id
+msgid "Vendor"
+msgstr "المورد"
+
+#. module: bill_return
 #: model:ir.model.fields,field_description:bill_return.field_account_move_line__vendor_bills
 msgid "Vendor Bills"
 msgstr "فواتير المورد"
-
-#. module: bill_return
-#: model:ir.ui.menu,name:bill_return.menu_vendor_list_root
-msgid "Vendor Management"
-msgstr "إدارة الموردين"
-
-#. module: bill_return
-#: model:ir.actions.act_window,name:bill_return.action_vendor_list
-#: model:ir.ui.menu,name:bill_return.menu_vendor_list
-msgid "Vendors"
-msgstr "الموردون"
 

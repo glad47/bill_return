@@ -7,18 +7,36 @@
                 <form string="Bulk Bill Return" create="false" delete="false">
                 <sheet>
                     <group>
-                    <field name="vendor_ids"/>
+                    <!-- <field name="vendor_ids"/> -->
 
                     <separator string="Storage Configuration" colspan="2"/>
                     <field name="location_ids"/>
                     <field name="default_location_id" required="1"/>
 
-                    <separator string="Transit Configuration" colspan="2"/>
+                    <!-- <separator string="Transit Configuration" colspan="2"/>
                     <field name="intermediate_location_id"/>
-                    <field name="default_intermediate_location_id"/>
+                    <field name="default_intermediate_location_id"/> -->
 
-                    <separator string="Picking Settings" colspan="2"/>
-                    <field name="picking_type_ids"/>
+                    <separator string="Location-Vendor Mapping" colspan="2"/>
+                    <field name="location_vendor_map_ids">
+                        <tree editable="bottom">
+                            <field name="location_id"/>
+                            <field name="vendor_id"/>
+                        </tree>
+                    </field>
+
+
+                    <separator string="Location-Picking Type Mapping" colspan="2"/>
+                    <field name="location_picking_type_map_ids">
+                        <tree editable="bottom">
+                            <field name="location_id"/>
+                            <field name="picking_type_id"/>
+                        </tree>
+                    </field>
+
+
+                    <!-- <separator string="Picking Settings" colspan="2"/>
+                    <field name="picking_type_ids"/> -->
                     </group>
                 </sheet>
                 </form>

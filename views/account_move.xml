@@ -9,7 +9,8 @@
       
         <xpath expr="//group[@id='header_right_group']" position="after">
             <group>
-                <field name="storage_id" domain="[('complete_name', 'in', ['TWH/STOCK', 'TH/STOCK'])]"/>
+               <field name="storage_id"
+                        attrs="{'readonly': [('state', '!=', 'draft')]}" />
             </group>
         </xpath>
 
@@ -31,6 +32,16 @@
                         domain="[('complete_name', 'in', ['TWH/STOCK', 'TH/STOCK'])]"/>
                 </group>
         </xpath> -->
+
+        <xpath expr="//div[@class='oe_button_box']" position="inside">
+            <button name="action_view_transfer_pickings"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-building-o"
+                    attrs="{'invisible': [('transfer_picking_count', '=', 0)]}">
+                <field name="transfer_picking_count" widget="statinfo" string="Storage Movement"/>
+            </button>
+        </xpath>
 
 
         <xpath expr="//div[@class='oe_button_box']" position="inside">
@@ -74,7 +85,7 @@
                                                     and [('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
                                                     or [('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
                                                "/>
-                                        <field name="vendor_bills"  />
+                                        <field name="vendor_bills" attrs="{'readonly': ['|', ('partner_id', '=', False), ('product_id', '=', False)]}" />
                                         <field name="location_name" />
                                         <field name="name" widget="section_and_note_text" optional="show"/>
                                         <field name="account_id"

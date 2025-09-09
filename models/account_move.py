@@ -6,9 +6,17 @@ class AccountMove(models.Model):
 
     return_picking_ids = fields.Many2many(
         'stock.picking',
+        'account_move_return_picking_rel',
+        'move_id',
+        'picking_id',
+        string='Return Pickings'
+    )
+
+
+
+    return_picking_count = fields.Integer(
         string='Return Pickings',
-        help='Pickings created to return goods for this bill',
-        store=True
+        compute='_compute_return_picking_count'
     )
 
     storage_id = fields.Many2one(
@@ -19,16 +27,31 @@ class AccountMove(models.Model):
         store=True
     )
 
+    transfer_picking_ids = fields.Many2many(
+        'stock.picking',
+        'account_move_transfer_picking_rel',
+        'move_id',
+        'picking_id',
+        string='Transfer Pickings'
+    )
+
+    transfer_picking_count = fields.Integer(
+        string='Return Pickings',
+        compute='_compute_transfer_picking_count'
+    )
+
 
    
-    return_picking_count = fields.Integer(
-        string='Return Pickings',
-        compute='_compute_return_picking_count'
-    )
+    
 
     def _compute_return_picking_count(self):
         for rec in self:
             rec.return_picking_count = len(rec.return_picking_ids)
+
+
+    def _compute_transfer_picking_count(self):
+        for rec in self:
+            rec.transfer_picking_count = len(rec.transfer_picking_ids)        
     
 
 
@@ -45,7 +68,6 @@ class AccountMove(models.Model):
         return config.default_intermediate_location_id.id if config and config.default_intermediate_location_id else False
 
 
-  
 
 
     def action_view_return_pickings(self):
@@ -58,6 +80,26 @@ class AccountMove(models.Model):
             'domain': [('id', 'in', self.return_picking_ids.ids)],
             'context': {'default_origin': self.name},
         }
+    
+    def action_view_transfer_pickings(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Receipt',
+            'res_model': 'stock.picking',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', self.transfer_picking_ids.ids)],
+            'context': {'default_origin': self.name},
+        }
+    
+
+    @api.onchange('storage_id')
+    def _onchange_storage_id_update_qty(self):
+        location = self.storage_id
+        for line in self.invoice_line_ids:
+            if line.product_id and location:
+                line.compute_qty_allowed()
+
 
     def action_post(self):
         moves_with_payments = self.filtered('payment_id')
@@ -68,10 +110,33 @@ class AccountMove(models.Model):
         if other_moves:
             other_moves._post(soft=False)
             return_ids = []
+            transfer_ids = []
+            location = self.storage_id
+            if not location:
+                return
+
+            invalid_products = []
+
+            for line in self.invoice_line_ids:
+                if line.product_id:
+                    line.compute_qty_allowed()
+                    if line.qty_allowed == 0:
+                        invalid_products.append(line.product_id.display_name)
+
+            if invalid_products:
+                raise ValidationError(
+                    "The following products have zero allowed quantity at location '%s':\n- %s" % (
+                        location.complete_name,
+                        "\n- ".join(invalid_products)
+                    )
+                )
             # Prepare new move values
             for line in other_moves.line_ids:
                 for bill in line.vendor_bills:
                     if bill.invoice_origin:
+                        config = self.env['bill.return.config'].search([], limit=1)
+                        if not config or not config.default_location_id:
+                            raise ValidationError("You need to config Bill Return first, Configuration is missing.")
                         po = self.env['purchase.order'].search([('name', '=', bill.invoice_origin)], limit=1)
                         if po and po.picking_ids:
                            
@@ -152,43 +217,106 @@ class AccountMove(models.Model):
                                 
 
                                 if picking.location_dest_id.complete_name != other_moves.storage_id.complete_name:
-                                    print("yes")
-                                else:
-                                    print("no — creating receipt picking from intermediate to storage")
+                                    
+                                   
+                                    
 
-                                    config = self.env['bill.return.config'].search([], limit=1)
-                                    if not config or not config.default_intermediate_location_id or not config.default_location_id:
-                                        raise ValidationError("Bill Return Configuration is missing default locations.")
+                                    # Find the internal picking type mapped to the destination location
+                                    picking_type_line = config.location_picking_type_map_ids.filtered(
+                                        lambda line: line.location_id.id == picking.location_dest_id.id
+                                    )
 
-                                    picking_type = config.picking_type_ids.filtered(lambda pt: pt.code == 'incoming')
-                                    if not picking_type:
-                                        raise ValidationError("No incoming picking type configured for bill return.")
 
-                                    new_picking = self.env['stock.picking'].create({
-                                        'partner_id': other_moves.partner_id.id,
-                                        'picking_type_id': picking_type[0].id,
-                                        'location_id': config.default_intermediate_location_id.id,
-                                        'location_dest_id': config.default_location_id.id,
-                                        'origin': other_moves.name,
-                                        'move_ids_without_package': [(0, 0, {
-                                            'name': 'Receipt from intermediate',
-                                            'product_id': move.product_id.id,  # You must define this
-                                            'product_uom': move.product_uom.id,     # And this
-                                            'product_uom_qty': line.quantity,           # Or your desired quantity
-                                            'location_id': config.default_intermediate_location_id.id,
-                                            'location_dest_id': config.default_location_id.id,
-                                        })]
+
+                                    
+
+                                    if not picking_type_line:
+                                        raise ValidationError(
+                                            f"No internal picking type configured for location: {picking.location_dest_id.complete_name}"
+                                        )
+
+                                    # Find the vendor mapped to the destination location
+                                    vendor_line = config.location_vendor_map_ids.filtered(
+                                        lambda line: line.location_id.id == picking.location_dest_id.id
+                                    )
+
+                                    if not vendor_line:
+                                        raise ValidationError(
+                                            f"No vendor configured for location: {picking.location_dest_id.complete_name}"
+                                        )
+
+                                    transfer_picking = self.env['stock.picking'].create({
+                                        'partner_id': vendor_line.vendor_id.id,
+                                        'picking_type_id': picking_type_line.picking_type_id.id,
+                                        'location_id': other_moves.storage_id.id,
+                                        'location_dest_id': picking.location_dest_id.id,
+                                        'move_type': 'direct',
+                                        'company_id': picking.company_id.id,
                                     })
 
-                                    print(f"Created receipt picking: {new_picking.name}")
+                                    new_transfer_move = self.env['stock.move'].create({
+                                        'name': transfer_picking.name,
+                                        'product_id': line.product_id.id,
+                                        'product_uom_qty': line.quantity,
+                                        'product_uom': move.product_uom.id,
+                                        'picking_id': transfer_picking.id,
+                                        'location_id': transfer_picking.location_id.id,
+                                        'location_dest_id': transfer_picking.location_dest_id.id,
+                                        'partner_id': transfer_picking.partner_id.id,
+                                        'picking_type_id': transfer_picking.picking_type_id.id,
+                                        'company_id': transfer_picking.company_id.id,
+                                        'state': 'draft',
+                                    })
+
+                                    self.env['stock.move.line'].create({
+                                        'picking_id': transfer_picking.id,
+                                        'move_id': new_transfer_move.id,
+                                        'company_id': transfer_picking.company_id.id,
+                                        'product_id': new_transfer_move.product_id.id,
+                                        'product_uom_id': new_transfer_move.product_uom.id,
+                                        'location_id': new_transfer_move.location_id.id,
+                                        'location_dest_id': new_transfer_move.location_dest_id.id,
+                                        'qty_done': new_transfer_move.product_uom_qty,  # or line.quantity if you want to override
+                                    })
+
+
+                                    
+
+
+                                    transfer_picking.action_confirm()
+                                    transfer_picking.action_assign()
+                                    
+                                    # Validate the picking (final step)
+                                    transfer_picking.button_validate()
+                                    
+                                    transfer_ids.append(transfer_picking.id)
+                                    if other_moves.id not in po.linked_picking_ids.ids:
+                                        po.write({'linked_picking_ids': [(4, transfer_picking.id)]})
+
+
+
+                                    
+                                    print(f"Created receipt picking: {transfer_picking.name}")
+                                
+
+                                    
+
+                                    
   
 
 
 
                         else:
                             print(f"No picking found for PO: {bill.invoice_origin}")
-
-            other_moves.return_picking_ids = [(6, 0, return_ids)]
+            if len(return_ids) > 0 :
+                other_moves.return_picking_ids = [(6, 0, return_ids)]
+                print(" done other_moves.return_picking_ids")
+                print(other_moves.return_picking_ids)
+            
+            if len(transfer_ids) > 0 :
+                other_moves.transfer_picking_ids = [(6, 0, transfer_ids)]
+                print(" other_moves.transfer_picking_ids")
+                print(other_moves.transfer_picking_ids)
         return False
        
 
