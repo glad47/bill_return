@@ -1,5 +1,6 @@
 from odoo import models, fields, api,Command
 from odoo.exceptions import ValidationError
+
 class AccountMove(models.Model):
     _inherit = 'account.move'
     
@@ -63,9 +64,9 @@ class AccountMove(models.Model):
         config = self.env['bill.return.config'].search([], limit=1)
         return config.default_location_id.id if config and config.default_location_id else False
 
-    def _get_default_transit_location_id(self):
-        config = self.env['bill.return.config'].search([], limit=1)
-        return config.default_intermediate_location_id.id if config and config.default_intermediate_location_id else False
+    # def _get_default_transit_location_id(self):
+    #     config = self.env['bill.return.config'].search([], limit=1)
+    #     return config.default_intermediate_location_id.id if config and config.default_intermediate_location_id else False
 
 
 
