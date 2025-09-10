@@ -25,6 +25,17 @@ class AccountMoveLine(models.Model):
         store=True
     )
 
+    move_type = fields.Selection(
+        related='move_id.move_type',
+        store=True,
+        readonly=True,
+        string="Move Type"
+    )
+
+
+    
+
+
    
 
     @api.depends('vendor_bills')
@@ -179,7 +190,7 @@ class AccountMoveLine(models.Model):
                 if matching_lines:
                     # Use the first match (or customize logic if multiple)
                     match = matching_lines[0]
-                    print(match)
+                    # print(match)
                     # line.quantity = match.quantity
                     line.price_unit = match.price_unit
                 else:
@@ -193,7 +204,7 @@ class AccountMoveLine(models.Model):
 
         po = self.env['purchase.order'].search([('name', '=', bill.invoice_origin)], limit=1)
        
-        print(po.read()[0])
+        # print(po.read()[0])
         if not po or not po.picking_ids:
             return False
 

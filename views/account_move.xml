@@ -85,8 +85,12 @@
                                                     and [('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
                                                     or [('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]
                                                "/>
-                                        <field name="vendor_bills" attrs="{'readonly': ['|', ('partner_id', '=', False), ('product_id', '=', False)]}" />
-                                        <field name="location_name" />
+                                        <field name="vendor_bills"
+                                        attrs="{'readonly': ['|', ('partner_id', '=', False), ('product_id', '=', False)],
+                                                'invisible': [('move_type', '!=', 'in_refund')]}"/>
+                                        
+                                        <field name="location_name"
+                                            attrs="{'invisible': [('move_type', '!=', 'in_refund')]}"/>
                                         <field name="name" widget="section_and_note_text" optional="show"/>
                                         <field name="account_id"
                                                context="{'partner_id': partner_id, 'move_type': parent.move_type}"
@@ -100,7 +104,11 @@
                                                options="{'product_field': 'product_id', 'account_field': 'account_id'}"
                                                business_domain_compute="parent.move_type in ['out_invoice', 'out_refund', 'out_receipt'] and 'invoice' or parent.move_type in ['in_invoice', 'in_refund', 'in_receipt'] and 'bill' or 'general'"/>
                                         <field name="quantity" optional="show"/>
-                                        <field name="qty_allowed" optional="show"/>
+                                        <field name="move_type" invisible="1"/>
+                                        <field name="qty_allowed"                                               
+                                              attrs="{'invisible': [('move_type', '!=', 'in_refund')]}"/>
+
+
                                         <field name="product_uom_category_id" invisible="1"/>
                                         <field name="product_uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
                                         <field name="price_unit" string="Price"/>

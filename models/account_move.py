@@ -116,25 +116,26 @@ class AccountMove(models.Model):
             if not location:
                 return
 
-            invalid_products = []
-
-            for line in self.invoice_line_ids:
-                if line.product_id:
-                    line.compute_qty_allowed()
-                    if line.qty_allowed == 0:
-                        invalid_products.append(line.product_id.display_name)
-
-            if invalid_products:
-                raise ValidationError(
-                    "The following products have zero allowed quantity at location '%s':\n- %s" % (
-                        location.complete_name,
-                        "\n- ".join(invalid_products)
-                    )
-                )
+            
             # Prepare new move values
             for line in other_moves.line_ids:
                 for bill in line.vendor_bills:
                     if bill.invoice_origin:
+                        invalid_products = []
+
+                        for line in self.invoice_line_ids:
+                            if line.product_id:
+                                line.compute_qty_allowed()
+                                if line.qty_allowed == 0:
+                                    invalid_products.append(line.product_id.display_name)
+
+                        if invalid_products:
+                            raise ValidationError(
+                                "The following products have zero allowed quantity at location '%s':\n- %s" % (
+                                    location.complete_name,
+                                    "\n- ".join(invalid_products)
+                                )
+                            )
                         config = self.env['bill.return.config'].search([], limit=1)
                         if not config or not config.default_location_id:
                             raise ValidationError("You need to config Bill Return first, Configuration is missing.")
@@ -311,13 +312,8 @@ class AccountMove(models.Model):
                             print(f"No picking found for PO: {bill.invoice_origin}")
             if len(return_ids) > 0 :
                 other_moves.return_picking_ids = [(6, 0, return_ids)]
-                print(" done other_moves.return_picking_ids")
-                print(other_moves.return_picking_ids)
-            
             if len(transfer_ids) > 0 :
                 other_moves.transfer_picking_ids = [(6, 0, transfer_ids)]
-                print(" other_moves.transfer_picking_ids")
-                print(other_moves.transfer_picking_ids)
         return False
        
 
