@@ -16,13 +16,13 @@ class AccountMoveLine(models.Model):
         string="Allowed Quantity",
         compute="_compute_qty_allowed",
         readonly=True,
-        store=True,
+        store=False,
     )
 
     location_name = fields.Char(
         string="Location",
         compute="_compute_location_name",
-        store=True
+        store=False
     )
 
     move_type = fields.Selection(
